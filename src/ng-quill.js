@@ -105,6 +105,9 @@
       'onContentChanged': '&?',
       'onBlur': '&?',
       'onFocus': '&?',
+      'onKeyUp': '&?',
+      'onKeyDown': '&?',
+      'onKeyPress': '&?',
       'onSelectionChanged': '&?',
       'ngModel': '<',
       'maxLength': '<',
@@ -165,6 +168,37 @@
           } else {
             this.ngModelCtrl.$setValidity('minlength', true)
           }
+        }
+      }
+
+      // Add custom events to quill contenteditable
+      this.initCustomEvents = function (editor) {
+        var self = this
+        if (this.onKeyUp) {
+          editor.root.addEventListener("keyup", function(event){
+            self.onKeyUp({
+              editor: editor,
+              keyboardEvent: event
+            })
+          })
+        }
+
+        if (this.onKeyDown) {
+          editor.root.addEventListener("keydown", function(event){
+            self.onKeyDown({
+              editor: editor,
+              keyboardEvent: event
+            })
+          })
+        }
+
+        if (this.onKeyPress) {
+          editor.root.addEventListener("keypress", function(event){
+            self.onKeyPress({
+              editor: editor,
+              keyboardEvent: event
+            })
+          })
         }
       }
 
@@ -302,6 +336,9 @@
         editor = new Quill(editorElem, config)
 
         this.ready = true
+
+        // Editor initialized -> add custom events
+        this.initCustomEvents(editor);
 
         // mark model as touched if editor lost focus
         selectionChangeEvent = editor.on('selection-change', function (range, oldRange, source) {
