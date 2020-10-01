@@ -342,12 +342,12 @@
 
         // mark model as touched if editor lost focus
         selectionChangeEvent = editor.on('selection-change', function (range, oldRange, source) {
-          if (range === null && this.onBlur) {
+          if (range === null && !this.readOnly && this.onBlur) {
             this.onBlur({
               editor: editor,
               source: source
             })
-          } else if (oldRange === null && this.onFocus) {
+          } else if (oldRange === null && !this.readOnly && this.onFocus) {
             this.onFocus({
               editor: editor,
               source: source
